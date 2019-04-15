@@ -38,7 +38,7 @@ The linear regression molecular clock method, essentially the same as in [the Jo
 
 The workflow for sample classification is implemented as a [Snakemake](https://snakemake.readthedocs.io/en/stable/) workflow, encoded in the `Snakemake` file, and can be graphically summarized as follows (for a specific sample):
 
-![img1](img/3.pdf)
+![img1](img/3.png)
 
 After the pipeline has completed, you need to run 
 
