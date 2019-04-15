@@ -1,0 +1,40 @@
+{
+    'samples': [
+            "CAP188/CAP188_ENV_2_all_hap.fasta",
+            "CAP217/CAP217_ENV_2_all_hap.fasta",
+            "CAP257/CAP257_NEF_1_all_hap.fasta",
+            "CAP288/CAP288_ENV_4_all_hap.fasta",
+            "CAP316/CAP316_GAG_1_all_hap.fasta",
+            "CAP188/CAP188_ENV_3_all_hap.fasta",
+            "CAP217/CAP217_ENV_3_all_hap.fasta",
+            "CAP287/CAP287_ENV_2_all_hap.fasta",
+            "CAP288/CAP288_GAG_1_all_hap.fasta",
+            "CAP336/CAP336_ENV_2_all_hap.fasta",
+            "CAP188/CAP188_ENV_4_all_hap.fasta",
+            "CAP217/CAP217_ENV_4_all_hap.fasta",
+            "CAP287/CAP287_ENV_3_all_hap.fasta",
+            "CAP288/CAP288_NEF_1_all_hap.fasta",
+            "CAP336/CAP336_ENV_3_all_hap.fasta",
+            "CAP188/CAP188_NEF_1_all_hap.fasta",
+            "CAP257/CAP257_ENV_2_all_hap.fasta",
+            "CAP287/CAP287_ENV_4_all_hap.fasta",
+            "CAP302/CAP302_ENV_3_all_hap.fasta",
+            "CAP336/CAP336_ENV_4_all_hap.fasta",
+            "CAP206/CAP206_ENV_2_all_hap.fasta",
+            "CAP257/CAP257_ENV_3_all_hap.fasta",
+            "CAP287/CAP287_GAG_1_all_hap.fasta",
+            "CAP302/CAP302_ENV_4_all_hap.fasta",
+            "CAP336/CAP336_GAG_1_all_hap.fasta",
+            "CAP206/CAP206_ENV_4_all_hap.fasta",
+            "CAP257/CAP257_ENV_4_all_hap.fasta",
+            "CAP288/CAP288_ENV_2_all_hap.fasta",
+            "CAP302/CAP302_NEF_1_all_hap.fasta",
+            "CAP336/CAP336_NEF_1_all_hap.fasta",
+            "CAP206/CAP206_GAG_1_all_hap.fasta",
+            "CAP257/CAP257_GAG_1_all_hap.fasta",
+            "CAP288/CAP288_ENV_3_all_hap.fasta",
+            "CAP316/CAP316_ENV_3_all_hap.fasta"              
+     ]
+}
+
+
