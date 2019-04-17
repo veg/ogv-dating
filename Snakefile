@@ -13,7 +13,7 @@ callables = {
     'muscle' : '/usr/local/bin/muscle',
     'raxml' : '/usr/local/bin/raxml-ng',
     'fasttree' : '/usr/local/bin/FastTree',
-    'classifier' : '/Users/sergei/Development/phylotree.js/src/cli/compute-distance.js'
+    'classifier' : 'scripts/compute-distance.js'
 }
 
 

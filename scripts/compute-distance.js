@@ -170,13 +170,15 @@ var csvStream = csv.parse({delimiter : "\t", headers : true})
                 const z_distance = neighbor_nodes.map (v => [Math.abs (v[0]-mean_distance) / sd_distance,v[1]]);
                 console.log (z_distance);
                 */
+
+                //if (node.data.trait == partitions[0].name)
+                //    console.log ("\n", node.data.name, neighbor_nodes, min_distance);
         
-                neighbor_nodes = _.filter (neighbor_nodes, (v) => v[0] < 2*min_distance);
-                
+                neighbor_nodes = _.filter (neighbor_nodes, (v) => v[0] <= 2*min_distance);
+               
                 let nn_count = neighbor_nodes.length;
                 
-                //console.log ("\n", node.data.name, neighbor_nodes.map (v=>[v[0],group_by_index[v[1]][1].data.name]).map (v=>v[1]).join ("|"));
-                neighbor_nodes = _.countBy (neighbor_nodes.map (v => [v[0],group_by_index[v[1]][1].decimal_date_value]), (v) => v[1]);
+                 neighbor_nodes = _.countBy (neighbor_nodes.map (v => [v[0],group_by_index[v[1]][1].decimal_date_value]), (v) => v[1]);
                 
         
                 
