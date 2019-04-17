@@ -64,12 +64,23 @@ for (filter.id = 0; filter.id < filter.protein[terms.data.sequences]; filter.id 
 fprintf (filter.path, CLOSE_FILE);
 
 filter.aligned = alignments.ReadNucleotideDataSet ("filter.dataset", filter.path);
+DataSetFilter filter.all = CreateFilter (filter.dataset, 1);
 
-DataSetFilter filter.filter = CreateFilter (filter.dataset, 1);
+filter.names = alignments.GetSequenceNames ("filter.all");
 
-io.ReportProgressMessage ("UNIQUE SEQUENCES", "Retained `alignments.CompressDuplicateSequences ('filter.filter','filter.compressed', TRUE)` unique sequences");
+filter.splits = regexp.PartitionByRegularExpressions (filter.names, {"0" : "QVOA|OGV"});
+filter.rna_selector  = utility.SwapKeysAndValues (filter.splits[""]);
+DataSetFilter filter.rna = CreateFilter (filter.dataset, 1, "", filter.rna_selector / filter.names[speciesIndex]);
+
+io.ReportProgressMessage ("UNIQUE SEQUENCES", "Retained `alignments.CompressDuplicateSequences ('filter.rna','filter.rna.compressed', TRUE)` unique RNA sequences");
 
 utility.SetEnvVariable ("DATA_FILE_PRINT_FORMAT", 9);
-fprintf (filter.path, CLEAR_FILE, filter.compressed);
+fprintf (filter.path, CLEAR_FILE, filter.rna.compressed);
 
+if (utility.Array1D(filter.splits["QVOA|OGV"])) {
+    filter.qvoa_selector = utility.SwapKeysAndValues (filter.splits["QVOA|OGV"]);
+    DataSetFilter filter.qvoa = CreateFilter (filter.dataset, 1, "", filter.qvoa_selector / filter.names[speciesIndex]);
+    io.ReportProgressMessage ("UNIQUE SEQUENCES", "Retained `alignments.CompressDuplicateSequences ('filter.qvoa','filter.qvoa.compressed', TRUE)` unique QVOA sequences");
+    fprintf (filter.path, "\n", filter.qvoa.compressed);
+}
 
