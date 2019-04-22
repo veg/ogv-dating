@@ -68,19 +68,30 @@ DataSetFilter filter.all = CreateFilter (filter.dataset, 1);
 
 filter.names = alignments.GetSequenceNames ("filter.all");
 
-filter.splits = regexp.PartitionByRegularExpressions (filter.names, {"0" : "QVOA|OGV"});
-filter.rna_selector  = utility.SwapKeysAndValues (filter.splits[""]);
-DataSetFilter filter.rna = CreateFilter (filter.dataset, 1, "", filter.rna_selector / filter.names[speciesIndex]);
+filter.splits = regexp.PartitionByRegularExpressionsWithSub (filter.names, {"0" : "QVOA|OGV", "1" : "([0-9]+WPI)"});
 
-io.ReportProgressMessage ("UNIQUE SEQUENCES", "Retained `alignments.CompressDuplicateSequences ('filter.rna','filter.rna.compressed', TRUE)` unique RNA sequences");
+fprintf (filter.path, CLEAR_FILE);
 
-utility.SetEnvVariable ("DATA_FILE_PRINT_FORMAT", 9);
-fprintf (filter.path, CLEAR_FILE, filter.rna.compressed);
+utility.SetEnvVariable ("DATA_FILE_PRINT_FORMAT",9);
 
-if (utility.Array1D(filter.splits["QVOA|OGV"])) {
-    filter.qvoa_selector = utility.SwapKeysAndValues (filter.splits["QVOA|OGV"]);
-    DataSetFilter filter.qvoa = CreateFilter (filter.dataset, 1, "", filter.qvoa_selector / filter.names[speciesIndex]);
-    io.ReportProgressMessage ("UNIQUE SEQUENCES", "Retained `alignments.CompressDuplicateSequences ('filter.qvoa','filter.qvoa.compressed', TRUE)` unique QVOA sequences");
-    fprintf (filter.path, "\n", filter.qvoa.compressed);
+
+utility.ForEach (filter.splits, "_sequences_", 'filter.compress ( _sequences_)');
+
+filter.count = 0;
+
+
+function filter.compress (s) {
+    if (utility.Array1D (s)) {
+        filter.selector  = utility.SwapKeysAndValues (s);
+        DataSetFilter filter.subfilter = CreateFilter (filter.dataset, 1, "", filter.selector / filter.names[speciesIndex]);
+        io.ReportProgressMessage ("UNIQUE SEQUENCES", "Retained `alignments.CompressDuplicateSequences ('filter.subfilter','filter.subfilter.compressed', TRUE)` unique  sequences");
+        if (filter.count > 0) {
+            fprintf (filter.path, "\n", filter.subfilter.compressed);
+        } else {
+            fprintf (filter.path, filter.subfilter.compressed);
+        }
+        filter.count += 1;
+    }
+    
 }
 
