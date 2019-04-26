@@ -100,7 +100,7 @@ fprintf (filter.nuc_path, CLEAR_FILE, KEEP_OPEN);
 fprintf (filter.combined_protein_path, CLEAR_FILE, KEEP_OPEN);
 fprintf (filter.combined_nuc_path, CLEAR_FILE, KEEP_OPEN);
 
-filter.sequence_counts = {};
+filter.sequences_with_copies = {};
 
 utility.ForEach (filter.partitoned_sequence_names[""], "_seq_record_", 
 '
@@ -111,7 +111,7 @@ utility.ForEach (filter.partitoned_sequence_names[""], "_seq_record_",
         
         filter.RNA_reads[_seq_record_] = filter.read_to_check;
         
-        filter.sequence_counts [_seq_record_] = 1;
+        filter.sequences_with_copies [filter.read_to_check] = {"0" : _seq_record_};
         filter.unique [filter.read_to_check] = _seq_record_;
     
         filter.sequence_info[_seq_record_] = alignments.TranslateCodonsToAminoAcidsWithAmbigsAllFrames (filter.RNA_reads[_seq_record_],
@@ -139,7 +139,7 @@ utility.ForEach (filter.partitoned_sequence_names[""], "_seq_record_",
             filter.frameshifted [_seq_record_] = 1;
         }  
     } else {
-        filter.sequence_counts [filter.unique [filter.read_to_check]] += 1;
+        filter.sequences_with_copies [filter.read_to_check] + _seq_record_;
     }
                            
     filter.seq_count += 1;
@@ -158,9 +158,11 @@ filter.options["code"] = filter.code_info;
 
 if (Abs(filter.frameshifted)) {
     io.ReportProgressMessage ("Data QC", "Correcting frame-shifts in the remaining reads");
-
+    filter.seq_count = 1;
+ 
     utility.ForEachPair (filter.frameshifted, "_sequence_", "_value_",
     '
+        io.ReportProgressBar ("filter","Processing sequence " + filter.seq_count);
         filter.cleaned = IgSCUEAL.align_sequence_to_reference_set (filter.RNA_reads[_sequence_], filter.ref_seq, filter.options);
         
         //if (_sequence_ == "CAP206_159wpi_ENV_2_all_aligned_loops_trimmed_98_2") {
@@ -169,20 +171,21 @@ if (Abs(filter.frameshifted)) {
  
         filtered.aa_seq = alignments.StripGaps(filter.cleaned["AA"]);
         filtered.na_seq = IgSCUEAL.strip_in_frame_indels(filter.cleaned["QRY"]);
-        _sequence_tag_ = _sequence_ + "_" + filter.sequence_counts [_sequence_];
         
-        fprintf (filter.protein_path, ">", _sequence_tag_, "\n",  filtered.aa_seq, "\n");
-        fprintf (filter.nuc_path, ">", _sequence_tag_, "\n", filtered.na_seq , "\n");
-        fprintf (filter.combined_protein_path, ">", _sequence_tag_, "\n",  filtered.aa_seq, "\n");
-        fprintf (filter.combined_nuc_path, ">", _sequence_tag_, "\n", filtered.na_seq , "\n");
+        (filter.sequences_with_copies[filter.RNA_reads[_sequence_]])["_write_to_file"][""];
+        filter.seq_count += 1;
     ');
+
+    io.ClearProgressBar ();
     
 } 
 
 io.ReportProgressMessage ("Data QC", "Checking for frame-preserving indels in other reads");
+filter.seq_count = 1;
 
 utility.ForEachPair (filter.clean_seqs, "_sequence_", "_value_",
 '
+    io.ReportProgressBar ("filter","Processing sequence " + filter.seq_count);
     filter.cleaned = IgSCUEAL.align_sequence_to_reference_set (filter.RNA_reads[_sequence_], filter.ref_seq, filter.options);
 
     //if (_sequence_ == "CAP206_159wpi_ENV_2_all_aligned_loops_trimmed_98_2") {
@@ -191,13 +194,12 @@ utility.ForEachPair (filter.clean_seqs, "_sequence_", "_value_",
 
     filtered.aa_seq = alignments.StripGaps(filter.cleaned["AA"]);
     filtered.na_seq = IgSCUEAL.strip_in_frame_indels(filter.cleaned["QRY"]);
-    _sequence_tag_ = _sequence_ + "_" + filter.sequence_counts [_sequence_];
-    
-    fprintf (filter.protein_path, ">", _sequence_tag_, "\n",  filtered.aa_seq, "\n");
-    fprintf (filter.nuc_path, ">", _sequence_tag_, "\n", filtered.na_seq , "\n");
-    fprintf (filter.combined_protein_path, ">", _sequence_tag_, "\n",  filtered.aa_seq, "\n");
-    fprintf (filter.combined_nuc_path, ">", _sequence_tag_, "\n", filtered.na_seq , "\n");
+    (filter.sequences_with_copies[filter.RNA_reads[_sequence_]])["_write_to_file"][""];
+    filter.seq_count += 1;
 ');
+
+io.ClearProgressBar ();
+
 
 io.ReportProgressMessage ("Data QC", "Performing QA on QVOA reads");
 
@@ -223,6 +225,12 @@ io.ReportProgressMessage ("Next steps", "Please run **`filter.protein_path`** th
 
 //console.log (filter.clean_seqs);
 
+function _write_to_file (key, value) {
+    fprintf (filter.protein_path, ">", value, "\n",  filtered.aa_seq, "\n");
+    fprintf (filter.nuc_path, ">", value, "\n", filtered.na_seq , "\n");
+    fprintf (filter.combined_protein_path, ">", value, "\n",  filtered.aa_seq, "\n");
+    fprintf (filter.combined_nuc_path, ">", value, "\n", filtered.na_seq , "\n");
+ }
 
 
 
