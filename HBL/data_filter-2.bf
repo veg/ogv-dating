@@ -1,4 +1,4 @@
-RequireVersion ("2.3.12");
+RequireVersion ("2.4.0");
 
 
 LoadFunctionLibrary     ("libv3/tasks/alignments.bf");
