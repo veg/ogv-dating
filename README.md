@@ -1,5 +1,7 @@
 # Timing of QVOA strains using RNA pre-treatment data
 
+<a href="https://zenodo.org/badge/latestdoi/181484600"><img src="https://zenodo.org/badge/181484600.svg" alt="DOI"></a>
+
 ## Overview
 
 This pipeline **times** outgrowth virus (OGV) strains from a single host using serially sampled RNA data. Four different approaches are used to assign dates to unobserved strains. First, each tree is rooted to maximize the root-to-tip to sampling time correlation coefficient. 
