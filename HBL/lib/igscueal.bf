@@ -627,7 +627,24 @@ namespace IgSCUEAL {
         return {'aligned': sequence, 'stripped' : sequence ^ {{"\-",""}}};
     }
 
-    lfunction  strip_non_letters (sequence) {
+ 
+    lfunction  strip_in_frame_gaps (sequence) {
+        stripped = ""; stripped * Abs (sequence);
+        for (i = 0; i < Abs (sequence); i+=3) {
+            codon = sequence[i][i+2];
+            if ((codon $ "[ACGT][ACGT][ACGT]" )[0] == 0) {
+                stripped * codon;
+            } else {
+                if (codon != '---') {
+                    return null;
+                }
+            }
+        }
+        stripped * 0;
+        return {'aligned': sequence, 'stripped' : stripped};
+    }
+
+   lfunction  strip_non_letters (sequence) {
         return {'aligned': sequence, 'stripped' : sequence ^ {{"[^A-Z,a-z]",""}}};
     }
 
@@ -664,7 +681,13 @@ namespace IgSCUEAL {
        result = {'SITES' : data["sites"]};
 
        utility.ForEach (align_with_these, "_value_",
-        "`&result`[_value_] = IgSCUEAL.strip_gaps (alignments.GetSequenceByName ('`namespace`', _value_));"
+        "
+            `&result`[_value_] = IgSCUEAL.strip_in_frame_gaps (alignments.GetSequenceByName ('`namespace`', _value_));
+            if (`&result`[_value_] == None) {
+                `&result` - _value_;
+            }
+        "
+        
         );
 
 

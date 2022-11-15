@@ -5,12 +5,11 @@ ALIGNMENT_DIR       = "results/alignments"
 TREE_DIR            = "results/trees"
 CALLS_DIR           = "results/dating"
 
-
 TREES      = ['classification.csv']
 
 callables = {
     'hyphy' : '/usr/local/bin/hyphy',
-    'muscle' : '/usr/local/bin/muscle',
+    'mafft' : '/usr/local/bin/mafft --auto ',
     'raxml' : '/usr/local/bin/raxml-ng',
     'fasttree' : '/usr/local/bin/FastTree',
     'classifier' : 'scripts/compute-distance.js'
@@ -40,6 +39,7 @@ rule all:
   
 
 rule read_qc:
+    threads: 1
     input:
         #ensure_alignment
         "%s/{subject}/{sample}" % INPUT_DIR
@@ -53,12 +53,13 @@ rule read_qc:
         "%s HBL/data_filter.bf --input {input} --qvoa {output.qvoa} --protein {output.protein} --rna {output.nuc_data} --combined-rna {output.combined_nuc} --combined-protein {output.combined_protein}" % callables['hyphy']
         
 rule make_protein_msa_rna:
+    threads: 1
     input:
         "%s/{subject}/{tag}_protein.fas" % ALIGNMENT_DIR
     output:
         "%s/{subject}/{tag}_rna_protein.msa" % ALIGNMENT_DIR
     shell:
-        "%s -in {input} -out {output} 2>/dev/null" % callables['muscle']     
+        "%s {input} > {output} 2>/dev/null" % callables['mafft']     
   
 rule make_protein_msa_combined:
     input:
@@ -66,9 +67,10 @@ rule make_protein_msa_combined:
     output:
         "%s/{subject}/{sample}_combined_protein.msa" % ALIGNMENT_DIR
     shell:
-        "%s -in {input} -out {output} 2>/dev/null" % callables['muscle']    
+        "%s {input} > {output} 2>/dev/null" % callables['mafft']    
 
 rule make_codon_msa_rna:
+    threads: 1
     input:
         "%s/{subject}/{sample}_rna_protein.msa" % ALIGNMENT_DIR,
         "%s/{subject}/{sample}_nuc.fas" % ALIGNMENT_DIR
@@ -78,6 +80,7 @@ rule make_codon_msa_rna:
         "%s HBL/data_filter-2.bf {input} {output}" % callables['hyphy']
 
 rule make_codon_msa_combined:
+    threads: 1
     input:
         "%s/{subject}/{sample}_combined_protein.msa" % ALIGNMENT_DIR,
         "%s/{subject}/{sample}_combined_nuc.fas" % ALIGNMENT_DIR
@@ -87,6 +90,7 @@ rule make_codon_msa_combined:
         "%s HBL/data_filter-2.bf {input} {output}" % callables['hyphy']
 
 rule infer_ml_rna_tree:
+    threads: 1
     input:
         "%s/{subject}/{sample}_rna.msa" % ALIGNMENT_DIR,
     output:
@@ -98,6 +102,7 @@ rule infer_ml_rna_tree:
         "%s -nt -gtr -gamma -slow < {input} > {output}" % callables ["fasttree"]
 
 rule infer_ml_tree:
+    threads: 1
     input:
         "%s/{subject}/{sample}_combined.msa" % ALIGNMENT_DIR,
     output:
@@ -109,6 +114,7 @@ rule infer_ml_tree:
         #"%s --msa {input} --force --model GTR --tree pars ; mv {input}.raxml.bestTree {output} " % callables['raxml']
 
 rule perform_placement:
+    threads: 4
     input:
         "%s/{subject}/{sample}_rna.msa" % ALIGNMENT_DIR,
         "%s/{subject}/{sample}_rna.nwk" % TREE_DIR
@@ -119,12 +125,13 @@ rule perform_placement:
         "cat {input} > %s/{wildcards.subject}/{wildcards.sample}.scueal; %s HBL/scripts/screen_fasta.bf %s/{wildcards.subject}/{wildcards.sample}.scueal %s/{wildcards.subject}/{wildcards.sample}_qvoa.fas {output}" % (CALLS_DIR, callables['hyphy'], CALLS_DIR, ALIGNMENT_DIR  )  
         
 rule perform_classification:
+    threads: 1
     input:
         newick = "%s/{subject}/{sample}_combined.nwk" % TREE_DIR,
         placement = "%s/{subject}/{sample}_full_placement.tsv" % CALLS_DIR
     output:        
         "%s/{subject}/{sample}_classification.csv" % CALLS_DIR
     shell:
-        "%s -n {input.newick} -r 'OGV,QVOA|OGV' RNA,NGS -p  {input.placement} > {output} " % callables['classifier']    
+        "%s -n {input.newick} -r 'OGV,QVOA|OGV|DNA' RNA,NGS -f RNA -p  {input.placement} > {output} " % callables['classifier']    
    
 

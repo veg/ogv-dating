@@ -1,0 +1,16 @@
+{
+  "name": "OGV dating",
+  "version": "0.0.1",
+  "description": "OGV dating script",
+  "engines": {
+    "node": ">=12"
+  },
+  "dependencies": {
+    "phylotree" : "1.0.0-alpha.21",
+    "fast-csv" : "<3.0",
+    "commander" : "=6.0",
+    "d3" : "<4.0",
+    "seedrandom" : ""
+  },
+  "license": "ISC"
+}
