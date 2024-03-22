@@ -108,7 +108,7 @@ if __name__ == '__main__':
                            record.append (line[0])
                            record.append (0)
                            start2art = annotations[subject]['Start2ART'] if subject in annotations else 0
-                           #print (line[0], start2art, file = sys.stderr)
+                           #print (line[0], subject, start2art, file = sys.stderr)
                            for c in [2,7,12]:
                                 dv = date_value(line[c],start2art)
                                 record.append (dv)

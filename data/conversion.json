@@ -129,5 +129,35 @@
 			"210": "rgb(0,204,255)",
 			"237": "rgb(0,0,255)"
 		}
+	},
+	"CAP222": {
+		"Start2ART": 318
+	},
+	"CAP244": {
+		"Start2ART": 380
+	},
+	"CAP256": {
+		"Start2ART": 235
+	},
+	"CAP268": {
+		"Start2ART": 221
+	},
+	"CAP277": {
+		"Start2ART": 258
+	},
+	"CAP280": {
+		"Start2ART": 300
+	},
+	"CAP286": {
+		"Start2ART": 149
+	},
+	"CAP333": {
+		"Start2ART": 193
+	},
+	"CAP372": {
+		"Start2ART": 182
+	},
+	"CAP380": {
+		"Start2ART": 133
 	}
 }

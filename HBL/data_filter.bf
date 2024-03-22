@@ -38,7 +38,7 @@ io.ReportProgressMessage ("Data QC", "Loaded `filter.nuc_data[terms.data.sequenc
 
 /* split off QVOA reads */
 
-filter.regex = "(QVOA)|(OGV)|(DNA)|(xxxx)|(BAR[0-9]+)|(W[0-9]+)";
+filter.regex = "(QVOA)|(OGV)|(DNA)|(xxxx)|(BAR[0-9]+)";
 filter.partitionining_expressions   = {"QVOA" : filter.regex};
 filter.partitoned_sequence_names    = regexp.PartitionByRegularExpressions(alignments.GetSequenceNames ("filter.raw_data"), filter.partitionining_expressions); 
 

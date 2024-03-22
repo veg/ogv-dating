@@ -1,6 +1,6 @@
 {
   "name": "ogv-dating",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "<a href=\"https://zenodo.org/badge/latestdoi/181484600\"><img src=\"https://zenodo.org/badge/181484600.svg\" alt=\"DOI\"></a>",
   "main": "index.js",
   "repository": {
