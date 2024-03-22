@@ -9,8 +9,8 @@ CALLS_DIR           = "results/dating"
 TREES      = ['classification.csv']
 
 callables = {
-    'hyphy' : '/usr/local/bin/hyphy',
-    'muscle' : '/usr/local/bin/muscle',
+    'hyphy' : '/Users/sergei/Development/hyphy/hyphy LIBPATH=/Users/sergei/Development/hyphy/res ',
+    'mafft' : '/usr/local/bin/mafft --auto ',
     'raxml' : '/usr/local/bin/raxml-ng',
     'fasttree' : '/usr/local/bin/FastTree',
     'classifier' : 'scripts/compute-distance.js'
@@ -58,7 +58,7 @@ rule make_protein_msa_rna:
     output:
         "%s/{subject}/{tag}_rna_protein.msa" % ALIGNMENT_DIR
     shell:
-        "%s -in {input} -out {output} 2>/dev/null" % callables['muscle']     
+        "%s {input} > {output} 2>/dev/null" % callables['mafft']     
   
 rule make_protein_msa_combined:
     input:
@@ -66,7 +66,7 @@ rule make_protein_msa_combined:
     output:
         "%s/{subject}/{sample}_combined_protein.msa" % ALIGNMENT_DIR
     shell:
-        "%s -in {input} -out {output} 2>/dev/null" % callables['muscle']    
+        "%s {input} > {output} 2>/dev/null" % callables['mafft']    
 
 rule make_codon_msa_rna:
     input:
@@ -125,6 +125,6 @@ rule perform_classification:
     output:        
         "%s/{subject}/{sample}_classification.csv" % CALLS_DIR
     shell:
-        "%s -n {input.newick} -r 'OGV,QVOA|OGV' RNA,NGS -p  {input.placement} > {output} " % callables['classifier']    
+        "%s -n {input.newick} -r 'OGV,QVOA|OGV|DNA' RNA,NGS -f RNA -p  {input.placement} > {output} " % callables['classifier']    
    
 

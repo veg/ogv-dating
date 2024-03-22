@@ -1,9 +1,12 @@
 RequireVersion ("2.4.0");
 
+filter.retain_all_sequences = "QVOA|OGV";
 
 LoadFunctionLibrary     ("libv3/tasks/alignments.bf");
 LoadFunctionLibrary     ("libv3/convenience/regexp.bf");
 LoadFunctionLibrary     ("libv3/IOFunctions.bf");
+
+
 
 filter.analysis_description = {terms.io.info :
                             "
@@ -74,18 +77,22 @@ fprintf (filter.path, CLEAR_FILE);
 
 utility.SetEnvVariable ("DATA_FILE_PRINT_FORMAT",9);
 
-
-utility.ForEach (filter.splits, "_sequences_", 'filter.compress ( _sequences_)');
+filter.splits["filter.compress"][""];
+//utility.ForEachPair (filter.splits, "_key_", "_sequences_", 'filter.compress ( _sequences_, _key_)');
 
 filter.count = 0;
 
-
-function filter.compress (s) {
+function filter.compress (k, s) {
     if (utility.Array1D (s)) {
         filter.selector  = utility.SwapKeysAndValues (s);
-        DataSetFilter filter.subfilter = CreateFilter (filter.dataset, 1, "", filter.selector / filter.names[speciesIndex]);
-        io.ReportProgressMessage ("UNIQUE SEQUENCES", "Retained `alignments.CompressDuplicateSequences ('filter.subfilter','filter.subfilter.compressed', TRUE)` unique  sequences");
-        if (filter.count > 0) {
+        if (None == regexp.Find (k, filter.retain_all_sequences) ) {
+            DataSetFilter filter.subfilter = CreateFilter (filter.dataset, 1, "", filter.selector / filter.names[speciesIndex]);
+            io.ReportProgressMessage ("UNIQUE SEQUENCES", "`k` : retained `alignments.CompressDuplicateSequences ('filter.subfilter','filter.subfilter.compressed', TRUE)` unique sequences out of " + filter.subfilter.species + " total sequences");
+        } else {
+            DataSetFilter filter.subfilter.compressed = CreateFilter (filter.dataset, 1, "", filter.selector / filter.names[speciesIndex]);
+            io.ReportProgressMessage ("UNIQUE SEQUENCES", "`k` ALL " + filter.subfilter.compressed.species + " sequences"); 
+        }
+         if (filter.count > 0) {
             fprintf (filter.path, "\n", filter.subfilter.compressed);
         } else {
             fprintf (filter.path, filter.subfilter.compressed);

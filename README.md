@@ -31,7 +31,7 @@ The linear regression molecular clock method, essentially the same as in [the Jo
 ### Dependancies
 
 1. `HyPhy v2.4` -- the `develop` branch from [github.com/veg/hyphy](github.com/veg/hyphy)
-2. `muscle` for MSA generation
+2. `mafft` for MSA generation
 3. `FastTree` for phylogeny inference
 4. `phylotree.js` for tree processing and visualization [note; there is a custom JS script for performing dating steps that is included in `scripts`]
 5. `snakemake` for workflow management
@@ -159,7 +159,7 @@ CAP188_4260_185WPI_ENV_C2C3_NGS_046_0.002
 
 3. The resulting in-frame sequences were translated to amino-acids, mapping all ambiguous codons to `?` (e.g. `A-A`).
 
-4. A multiple sequence alignment (MSA) was generated from translated protein sequences using `muscle`
+4. A multiple sequence alignment (MSA) was generated from translated protein sequences using `mafft`
 
 5. Original codon sequences are mapped to aligned protein sequences using a script in `HyPhy`. Identical sequences (which do not contribute any information to phylogenetic analyses) are removed at this stage.
 
