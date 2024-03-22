@@ -1,4 +1,4 @@
-RequireVersion ("2.4.0");
+RequireVersion ("2.5.55");
 
 filter.retain_all_sequences = "QVOA|OGV";
 

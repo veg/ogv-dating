@@ -90,23 +90,47 @@ rule infer_ml_rna_tree:
     input:
         "%s/{subject}/{sample}_rna.msa" % ALIGNMENT_DIR,
     output:
-        "%s/{subject}/{sample}_rna.nwk" % TREE_DIR
+        "%s/{subject}/{sample}_rna_unscaled.nwk" % TREE_DIR
     shadow: 
         "shallow"
     shell:
         #"%s --msa {input} --force --model GTR --tree pars ; mv {input}.raxml.bestTree {output} " % callables['raxml']
-        "%s -nt -gtr -gamma -slow < {input} > {output}" % callables ["fasttree"]
+        "%s -nt -gtr < {input} > {output}" % callables ["fasttree"]
+
+rule infer_ml_rna_tree_lengths:
+    input:
+        msa = "%s/{subject}/{sample}_rna.msa" % ALIGNMENT_DIR,
+        tree = "%s/{subject}/{sample}_rna_unscaled.nwk" % TREE_DIR
+    output:
+        "%s/{subject}/{sample}_rna.nwk" % TREE_DIR
+    shadow: 
+        "shallow"
+    shell:
+        "%s HBL/branch-lengths.bf {input.msa} {input.tree} {output}" % callables['hyphy']
+
 
 rule infer_ml_tree:
     input:
         "%s/{subject}/{sample}_combined.msa" % ALIGNMENT_DIR,
     output:
+        "%s/{subject}/{sample}_combined_unscaled.nwk" % TREE_DIR
+    shadow: 
+        "shallow"
+    shell:
+        "%s -nt -gtr < {input} > {output}" % callables ["fasttree"]
+        #"%s --msa {input} --force --model GTR --tree pars ; mv {input}.raxml.bestTree {output} " % callables['raxml']
+
+rule infer_ml_tree_lengths:
+    input:
+        msa = "%s/{subject}/{sample}_combined.msa" % ALIGNMENT_DIR,
+        tree = "%s/{subject}/{sample}_combined_unscaled.nwk" % TREE_DIR
+    output:
         "%s/{subject}/{sample}_combined.nwk" % TREE_DIR
     shadow: 
         "shallow"
     shell:
-        "%s -nt -gtr -gamma -slow < {input} > {output}" % callables ["fasttree"]
-        #"%s --msa {input} --force --model GTR --tree pars ; mv {input}.raxml.bestTree {output} " % callables['raxml']
+        "%s HBL/branch-lengths.bf {input.msa} {input.tree} {output}" % callables['hyphy']
+
 
 rule perform_placement:
     input:
