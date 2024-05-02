@@ -99,7 +99,7 @@ rule infer_ml_rna_tree:
         "shallow"
     shell:
         #"%s --msa {input} --force --model GTR --tree pars ; mv {input}.raxml.bestTree {output} " % callables['raxml']
-        "%s -nt -gtr < {input} > {output}" % callables ["fasttree"]
+        "%s -nt -gtr -gamma -slow < {input} > {output}" % callables ["fasttree"]
 
 rule infer_ml_rna_tree_lengths:
     input:
